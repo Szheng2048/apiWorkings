@@ -1,8 +1,11 @@
+//weather info
+
 const url = "https://dog.ceo/api/breeds/image/random"
 let latinUrl
 let longinUrl
 const latitude = document.querySelector("#lat")
 const longitude = document.querySelector("#long")
+count = 0
 let conditionObj = {
     0: "Clear Skies",
     1: "Mainly Clear",
@@ -33,20 +36,15 @@ let conditionObj = {
     96: "Thunderstorm with Slight Hail",
     99: "Thunderstorm with Heavy Hail"
 } 
-
-
 latitude.addEventListener("change",(event)=>{
-    latinUrl = event.target.value//parseFloat(event.target.value)*1
-    console.log(latinUrl)
+    latinUrl = event.target.value
 })
 longitude.addEventListener("change",(event)=>{
     longinUrl = event.target.value
 })
 
 
-
-// let weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latinUrl}&longitude=${longinUrl}&current=temperature_2m&temperature_unit=fahrenheit&current=weather_code,wind_speed_10m,wind_direction_10m&wind_speed_unit=mph`
-//click listener on button
+//dog button
 
 const generateDogButton = document.querySelector(".btn-primary")
 generateDogButton.addEventListener("click",()=>{
@@ -65,20 +63,24 @@ generateDogButton.addEventListener("click",()=>{
     })
 })
 
+//weather button
+
 const generateTheWeather = document.querySelector(".btn-success")
 
 function changingWeather(object){
     let additionOfWeather = document.querySelector("#weatheringNews")
     let temperature = document.createElement("p")
-        console.log(object)
-        temperature.innerHTML = `The temperature is ${object.current.temperature_2m}`
-        additionOfWeather.appendChild(temperature)
-        let typeOfCondition = document.createElement("p")
-        typeOfCondition.innerHTML = `${conditionObj[object.current.weather_code]}`
-        additionOfWeather.appendChild(typeOfCondition)
-        let wind = document.createElement("p")
-        wind.innerHTML = `The wind speed is ${object.current.wind_speed_10m} miles per hour at a degree of ${object.current.wind_direction_10m}`
-        additionOfWeather.appendChild(wind)
+    temperature.classList.add("new")
+    temperature.innerHTML = `The temperature is ${object.current.temperature_2m}`
+    additionOfWeather.appendChild(temperature)
+    let typeOfCondition = document.createElement("p")
+    typeOfCondition.classList.add("new")
+    typeOfCondition.innerHTML = `${conditionObj[object.current.weather_code]}`
+    additionOfWeather.appendChild(typeOfCondition)
+    let wind = document.createElement("p")
+    wind.classList.add("new")
+    wind.innerHTML = `The wind speed is ${object.current.wind_speed_10m} miles per hour at a degree of ${object.current.wind_direction_10m}`
+    additionOfWeather.appendChild(wind)
 }
 
 generateTheWeather.addEventListener("click",()=>{
@@ -89,17 +91,17 @@ generateTheWeather.addEventListener("click",()=>{
         return response.json()
     })
     .then((object)=>{
-        // let additionOfWeather = document.querySelector("#weatheringNews")
-        changingWeather(object)
-        // let temperature = document.createElement("p")
-        // console.log(object)
-        // temperature.innerHTML = `The temperature is ${object.current.temperature_2m}`
-        // additionOfWeather.appendChild(temperature)
-        // let typeOfCondition = document.createElement("p")
-        // typeOfCondition.innerHTML = `${conditionObj[object.current.weather_code]}`
-        // additionOfWeather.appendChild(typeOfCondition)
-        // let wind = document.createElement("p")
-        // wind.innerHTML = `The wind speed is ${object.current.wind_speed_10m} miles per hour at a degree of ${object.current.wind_direction_10m}`
-        // additionOfWeather.appendChild(wind)
+        console.log("response Processed")
+        // changingWeather(object)
+        if(count === 0){
+            changingWeather(object)
+            count++
+        } else {
+            let deletedItems = document.querySelectorAll(".new")
+            for(let item of deletedItems){
+                item.remove()
+            }
+            changingWeather(object)
+        }
     })
 })
